@@ -8,7 +8,7 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from src.services.user import UserService
 from src.db.db import get_db
-from src.config.config import config
+from src.config.config import settings
 
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/api/auth/login")
@@ -34,7 +34,7 @@ def create_token(
     expire = now + expires_delta
     to_encode.update({"exp": expire, "iat": now, "token_type": token_type})
     encoded_jwt = jwt.encode(
-        to_encode, config.JWT_SECRET, algorithm=config.JWT_ALGORITHM
+        to_encode, settings.JWT_SECRET, algorithm=settings.JWT_ALGORITHM
     )
     return encoded_jwt
 
@@ -44,7 +44,7 @@ async def create_access_token(data: dict, expires_delta: Optional[float] = None)
         access_token = create_token(data, expires_delta, "access")
     else:
         access_token = create_token(
-            data, timedelta(seconds=config.JWT_EXPIRATION_SECONDS), "access"
+            data, timedelta(seconds=settings.JWT_EXPIRATION_SECONDS), "access"
         )
     return access_token
 
@@ -54,7 +54,7 @@ async def create_refresh_token(data: dict, expires_delta: Optional[float] = None
         refresh_token = create_token(data, expires_delta, "refresh")
     else:
         refresh_token = create_token(
-            data, timedelta(seconds=config.JWT_REFRESH_EXPIRATION_SECONDS), "refresh"
+            data, timedelta(seconds=settings.JWT_REFRESH_EXPIRATION_SECONDS), "refresh"
         )
     return refresh_token
 
@@ -71,7 +71,7 @@ async def get_current_user(
     try:
         # Decode JWT
         payload = jwt.decode(
-            token, config.JWT_SECRET, algorithms=[config.JWT_ALGORITHM]
+            token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
         )
         username = payload["sub"]
         if username is None:

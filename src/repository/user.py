@@ -64,3 +64,11 @@ class UserRepository:
             await self.session.commit()
             await self.session.refresh(user)
         return user
+
+    async def update_avatar_url(self, email: str, url: str) -> User:
+        user = await self.get_user_by_email(email)
+        if user:
+            user.avatar = url
+            await self.session.commit()
+            await self.session.refresh(user)
+        return user

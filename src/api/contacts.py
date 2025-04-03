@@ -11,8 +11,8 @@ from fastapi import (
 from src.services.auth import get_current_user
 from src.db.models.user import User
 from src.services.contacts import ContactService
-from src.db.db import get_db
 from src.schemas.contact import ContactModel, ContactResponse
+from src.db.db import get_db
 from sqlalchemy.ext.asyncio import AsyncSession
 
 router = APIRouter(prefix="/contacts", tags=["contacts"])

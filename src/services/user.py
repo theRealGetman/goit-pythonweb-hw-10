@@ -6,7 +6,7 @@ from src.db.models.user import User
 from src.repository.user import UserRepository
 from src.schemas.user import UserCreate
 
-from src.config.config import config
+from src.config.config import settings
 
 
 class UserService:
@@ -53,7 +53,7 @@ class UserService:
     async def verify_refresh_token(self, refresh_token: str) -> User | None:
         try:
             payload = jwt.decode(
-                refresh_token, config.JWT_SECRET, algorithms=[config.JWT_ALGORITHM]
+                refresh_token, settings.JWT_SECRET, algorithms=[settings.JWT_ALGORITHM]
             )
             username: str = payload.get("sub")
             token_type: str = payload.get("token_type")
@@ -75,3 +75,6 @@ class UserService:
         if upd_user:
             return upd_user
         return None
+
+    async def update_avatar_url(self, email: str, avatar_url: str) -> User | None:
+        return await self.repository.update_avatar_url(email, avatar_url)
